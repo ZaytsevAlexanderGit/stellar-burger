@@ -4,27 +4,23 @@ import { OrderInfoUI } from '../ui/order-info';
 import { TIngredient } from '@utils-types';
 import { useSelector } from '../../services/store';
 import { getIngredients } from '../../services/ingredientsSlice';
-import { useParams } from 'react-router-dom';
-import { getFeeds } from '../../services/feedSlice';
+import { useLocation, useParams } from 'react-router-dom';
 
 export const OrderInfo: FC = () => {
   const { number } = useParams();
+  const location = useLocation();
 
-  /** TODO: взять переменные orderData и ingredients из стора */
-  // const orderData = {
-  //   _id: '',
-  //   status: '',
-  //   name: '',
-  //   createdAt: '',
-  //   updatedAt: 'string',
-  //   number: 0,
-  //   ingredients: []
-  // };
-  const orderData = useSelector(getFeeds).find(
-    (order) => order.number === Number(number)
-  );
+  const orderData = useSelector((state) => {
+    if (location.pathname.includes('profile'))
+      return state.order.orders.orders.find(
+        (order) => order.number === Number(number)
+      );
+    else
+      return state.feedData.feeds.find(
+        (order) => order.number === Number(number)
+      );
+  });
 
-  // const ingredients: TIngredient[] = [];
   const ingredients: TIngredient[] = useSelector(getIngredients);
 
   /* Готовим данные для отображения */

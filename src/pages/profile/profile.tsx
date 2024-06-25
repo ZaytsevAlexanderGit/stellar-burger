@@ -5,11 +5,7 @@ import { getUser, updateUser } from '../../services/authSlice';
 
 export const Profile: FC = () => {
   const dispatch = useDispatch();
-  /** TODO: взять переменную из стора */
-  // const user = {
-  //   name: '',
-  //   email: ''
-  // };
+
   const user = useSelector(getUser);
 
   const [formValue, setFormValue] = useState({

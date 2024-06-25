@@ -6,7 +6,7 @@ import {
   getOrder,
   setConstructor
 } from '../../services/constructorSlice';
-import { TConstructorIngredient } from '@utils-types';
+import { TConstructorIngredient, TIngredient } from '@utils-types';
 import {
   getOrderModalData,
   getOrderRequest,
@@ -16,42 +16,36 @@ import {
 } from '../../services/orderSlice';
 import { getFeedsFromServer } from '../../services/feedSlice';
 import { getIsAuthChecked } from '../../services/authSlice';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+
+const createOrderData = (burgerIngredients: {
+  bun: TIngredient;
+  ingredients: TIngredient[];
+}) => {
+  let orderIngredients: string[] = [];
+  orderIngredients.push(burgerIngredients.bun._id);
+  burgerIngredients.ingredients.forEach((ingr) =>
+    orderIngredients.push(ingr._id)
+  );
+  orderIngredients.push(burgerIngredients.bun._id);
+  return orderIngredients;
+};
 
 export const BurgerConstructor: FC = () => {
   const dispatch = useDispatch();
-  const location = useLocation();
   const navigate = useNavigate();
-
-  /** TODO: взять переменные constructorItems, orderRequest и orderModalData из стора */
-  // const constructorItems = {
-  //   bun: {
-  //     price: 0
-  //   },
-  //   ingredients: []
-  // };
 
   const constructorItems = useSelector(getOrder);
 
-  // const orderRequest = false;
   const orderRequest = useSelector(getOrderRequest);
-
-  // const orderModalData = null;
   const orderModalData = useSelector(getOrderModalData);
 
   const isAuth = useSelector(getIsAuthChecked);
 
   const onOrderClick = () => {
-    // if (!constructorItems.bun._id || orderRequest) return;
     if (isAuth) {
       if (constructorItems.bun._id !== '') {
-        let orderIngredients: string[] = [];
-        orderIngredients.push(constructorItems.bun._id);
-        constructorItems.ingredients.forEach((ingr) =>
-          orderIngredients.push(ingr._id)
-        );
-        orderIngredients.push(constructorItems.bun._id);
-        dispatch(orderBurger(orderIngredients)).then(() => {
+        dispatch(orderBurger(createOrderData(constructorItems))).then(() => {
           dispatch(getFeedsFromServer());
           dispatch(getOrdersFromServer());
           dispatch(
@@ -81,8 +75,6 @@ export const BurgerConstructor: FC = () => {
       ),
     [constructorItems]
   );
-
-  // return null;
 
   return (
     <BurgerConstructorUI

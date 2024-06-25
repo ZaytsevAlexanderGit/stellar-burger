@@ -9,11 +9,11 @@ const container = document.getElementById('root') as HTMLElement;
 const root = ReactDOMClient.createRoot(container!);
 
 root.render(
-  <React.StrictMode>
-    <Router>
-      <Provider store={store}>
-        <App />
-      </Provider>
-    </Router>
-  </React.StrictMode>
+  // <React.StrictMode>
+  <Router>
+    <Provider store={store}>
+      <App />
+    </Provider>
+  </Router>
+  // </React.StrictMode>
 );

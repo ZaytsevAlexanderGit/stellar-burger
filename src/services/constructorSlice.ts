@@ -1,5 +1,5 @@
 import { TConstructorIngredient, TIngredient } from '../utils/types';
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, nanoid, PayloadAction } from '@reduxjs/toolkit';
 
 export const emptyIngredient: TIngredient = {
   _id: '',
@@ -31,13 +31,6 @@ const initialState: TConstructorState = {
   }
 };
 
-const indexReset = (arr: TConstructorIngredient[], index: string) => {
-  arr.map((element) => {
-    if (Number(element.id) > Number(index))
-      element.id = (Number(element.id) - 1).toString();
-  });
-};
-
 const swapElements = (
   arr: TConstructorIngredient[],
   i1: number,
@@ -60,7 +53,7 @@ export const constructorSlice = createSlice({
       const l = state.constructorItems.ingredients.length;
       state.constructorItems.ingredients.push({
         ...action.payload,
-        id: (l + 1).toString()
+        id: nanoid()
       });
     },
     removeIngredient: (state, action: PayloadAction<string>) => {
@@ -68,7 +61,6 @@ export const constructorSlice = createSlice({
         state.constructorItems.ingredients.filter(
           (ingredient) => ingredient.id !== action.payload
         );
-      indexReset(state.constructorItems.ingredients, action.payload);
     },
     swapIngredient: (
       state,

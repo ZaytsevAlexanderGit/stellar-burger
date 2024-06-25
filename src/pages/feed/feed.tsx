@@ -10,13 +10,10 @@ import {
 } from '../../services/feedSlice';
 
 export const Feed: FC = () => {
-  /** TODO: взять переменную из стора */
-  // const orders: TOrder[] = [];
   const dispatch = useDispatch();
   const orders: TOrder[] = useSelector(getFeeds);
   const isLoaded = useSelector(getIsFeedsLoading);
 
-  // if (!orders.length) {
   if (isLoaded) {
     return <Preloader />;
   }

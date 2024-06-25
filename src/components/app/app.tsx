@@ -19,29 +19,20 @@ import { useEffect } from 'react';
 import { getIngredientsFromServer } from '../../services/ingredientsSlice';
 import { getFeedsFromServer } from '../../services/feedSlice';
 import { OnlyAuth, OnlyUnAuth } from '../../utils/protected-route';
-import {
-  getUserFromServer,
-  refreshTokensFromServer
-} from '../../services/authSlice';
-import { getOrdersFromServer } from '../../services/orderSlice';
-import { getCookie } from '../../utils/cookie';
+import { checkUserAuth } from '../../services/authSlice';
 
 const App = () => {
   const dispatch = useDispatch();
   let navigate = useNavigate();
   let location = useLocation();
-  let state = location.state as { background?: Location };
+
   useEffect(() => {
     dispatch(getIngredientsFromServer());
     dispatch(getFeedsFromServer());
-    if (getCookie('accessToken')) {
-      dispatch(getUserFromServer()).then(() => dispatch(getOrdersFromServer()));
-    } else {
-      if (localStorage.getItem('refreshToken')) {
-        dispatch(refreshTokensFromServer());
-      }
-    }
+    dispatch(checkUserAuth());
   }, []);
+
+  let state = location.state as { background?: Location };
 
   return (
     <div className={styles.app}>

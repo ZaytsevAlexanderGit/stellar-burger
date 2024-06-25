@@ -4,13 +4,13 @@ import {
   getUserApi,
   loginUserApi,
   logoutApi,
-  refreshToken,
   registerUserApi,
   TLoginData,
   TRegisterData,
   updateUserApi
 } from '@api';
-import { deleteCookie, setCookie } from '../utils/cookie';
+import { deleteCookie, getCookie, setCookie } from '../utils/cookie';
+import { getOrdersFromServer } from './orderSlice';
 
 type TUserInitialState = {
   user: TUser | null;
@@ -28,9 +28,24 @@ export const getUserFromServer = createAsyncThunk('auth/getUser', async () =>
   getUserApi()
 );
 
-export const refreshTokensFromServer = createAsyncThunk(
-  'auth/refreshToken',
-  async () => refreshToken()
+export const checkUserAuth = createAsyncThunk(
+  'auth/checkUserAuth',
+  async (_, { dispatch }) => {
+    if (getCookie('accessToken')) {
+      getUserApi()
+        .then((res) => {
+          dispatch(setUser(res.user));
+          dispatch(setIsAuthChecked(true));
+        })
+        .then(() => dispatch(getOrdersFromServer()))
+        .catch(() => {
+          deleteCookie('accessToken');
+          localStorage.removeItem('refreshToken');
+        });
+    } else {
+      dispatch(setIsAuthChecked(false));
+    }
+  }
 );
 
 export const registerUser = createAsyncThunk(
@@ -67,25 +82,12 @@ export const authSlice = createSlice({
     getIsAuthChecked: (state) => state.isAuthChecked
   },
   extraReducers: (builder) => {
-    builder.addCase(refreshTokensFromServer.pending, (state) => {
-      state.authDataLoading = true;
-    });
-    builder.addCase(refreshTokensFromServer.rejected, (state) => {
-      state.authDataLoading = false;
-      alert('Unable to login');
-    });
-    builder.addCase(refreshTokensFromServer.fulfilled, (state, action) => {
-      state.authDataLoading = false;
-      state.isAuthChecked = true;
-      setCookie('accessToken', action.payload.accessToken);
-      localStorage.setItem('refreshToken', action.payload.refreshToken);
-    });
     builder.addCase(getUserFromServer.pending, (state) => {
       state.authDataLoading = true;
     });
     builder.addCase(getUserFromServer.rejected, (state) => {
       state.authDataLoading = false;
-      alert('Unable to login');
+      state.isAuthChecked = false;
     });
     builder.addCase(getUserFromServer.fulfilled, (state, action) => {
       state.authDataLoading = false;
@@ -95,9 +97,9 @@ export const authSlice = createSlice({
     builder.addCase(registerUser.pending, (state) => {
       state.authDataLoading = true;
     });
-    builder.addCase(registerUser.rejected, (state) => {
+    builder.addCase(registerUser.rejected, (state, action) => {
       state.authDataLoading = false;
-      alert('Unable to register');
+      alert(action.error.message);
     });
     builder.addCase(registerUser.fulfilled, (state, action) => {
       state.authDataLoading = false;
@@ -109,9 +111,9 @@ export const authSlice = createSlice({
     builder.addCase(loginUser.pending, (state) => {
       state.authDataLoading = true;
     });
-    builder.addCase(loginUser.rejected, (state) => {
+    builder.addCase(loginUser.rejected, (state, action) => {
       state.authDataLoading = false;
-      alert('Unable to login');
+      alert(action.error.message);
     });
     builder.addCase(loginUser.fulfilled, (state, action) => {
       state.authDataLoading = false;
@@ -123,9 +125,9 @@ export const authSlice = createSlice({
     builder.addCase(updateUser.pending, (state) => {
       state.authDataLoading = true;
     });
-    builder.addCase(updateUser.rejected, (state) => {
+    builder.addCase(updateUser.rejected, (state, action) => {
       state.authDataLoading = false;
-      alert('Unable to update user data');
+      alert(action.error.message);
     });
     builder.addCase(updateUser.fulfilled, (state, action) => {
       state.authDataLoading = false;
@@ -134,11 +136,11 @@ export const authSlice = createSlice({
     builder.addCase(logoutUser.pending, (state) => {
       state.authDataLoading = true;
     });
-    builder.addCase(logoutUser.rejected, (state) => {
+    builder.addCase(logoutUser.rejected, (state, action) => {
       state.authDataLoading = false;
-      alert('Unable to logout');
+      alert(action.error.message);
     });
-    builder.addCase(logoutUser.fulfilled, (state, action) => {
+    builder.addCase(logoutUser.fulfilled, (state) => {
       state.authDataLoading = false;
       state.isAuthChecked = false;
       state.user = null;

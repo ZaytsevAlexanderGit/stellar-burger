@@ -40,7 +40,7 @@ export const orderSlice = createSlice({
     }
   },
   selectors: {
-    getUserOrders: (state) => state.orders,
+    getUserOrders: (state) => state.orders.orders,
     getOrderRequest: (state) => state.orderRequest,
     getOrderModalData: (state) => state.orderModalData
   },
@@ -73,4 +73,5 @@ export const orderSlice = createSlice({
 
 export const { getUserOrders, getOrderRequest, getOrderModalData } =
   orderSlice.selectors;
+
 export const { setOrderRequest, setOrderModalData } = orderSlice.actions;
