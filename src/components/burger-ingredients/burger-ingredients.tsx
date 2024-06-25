@@ -8,7 +8,7 @@ import { getIngredients } from '../../services/ingredientsSlice';
 
 export const BurgerIngredients: FC = () => {
   const allIngredients = useSelector(getIngredients);
-git a
+
   const buns = useMemo<TIngredient[]>(
     () => allIngredients.filter((ingredient) => ingredient.type === 'bun'),
     [allIngredients]
