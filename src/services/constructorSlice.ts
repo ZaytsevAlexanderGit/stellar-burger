@@ -49,12 +49,15 @@ export const constructorSlice = createSlice({
     setBun: (state, action: PayloadAction<TIngredient>) => {
       state.constructorItems.bun = action.payload;
     },
-    setIngredient: (state, action: PayloadAction<TIngredient>) => {
-      const l = state.constructorItems.ingredients.length;
-      state.constructorItems.ingredients.push({
-        ...action.payload,
-        id: nanoid()
-      });
+    setIngredient: {
+      reducer: (state, action: PayloadAction<TConstructorIngredient>) => {
+        console.log(action.payload);
+        state.constructorItems.ingredients.push(action.payload);
+      },
+      prepare: (ingredient) => {
+        const id = nanoid();
+        return { payload: { ...ingredient, id } };
+      }
     },
     removeIngredient: (state, action: PayloadAction<string>) => {
       state.constructorItems.ingredients =

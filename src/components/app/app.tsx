@@ -17,9 +17,9 @@ import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch } from '../../services/store';
 import { useEffect } from 'react';
 import { getIngredientsFromServer } from '../../services/ingredientsSlice';
-import { getFeedsFromServer } from '../../services/feedSlice';
 import { OnlyAuth, OnlyUnAuth } from '../../utils/protected-route';
 import { checkUserAuth } from '../../services/authSlice';
+import { setOrderModalData } from '../../services/orderSlice';
 
 const App = () => {
   const dispatch = useDispatch();
@@ -28,7 +28,6 @@ const App = () => {
 
   useEffect(() => {
     dispatch(getIngredientsFromServer());
-    dispatch(getFeedsFromServer());
     dispatch(checkUserAuth());
   }, []);
 
@@ -66,6 +65,7 @@ const App = () => {
               title='Детали Заказа'
               onClose={() => {
                 navigate('/feed');
+                dispatch(setOrderModalData(null));
               }}
             >
               <OrderInfo />
@@ -94,6 +94,7 @@ const App = () => {
                   title='Детали Заказа'
                   onClose={() => {
                     navigate('/profile/orders');
+                    dispatch(setOrderModalData(null));
                   }}
                 >
                   <OrderInfo />

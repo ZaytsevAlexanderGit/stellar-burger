@@ -11,9 +11,6 @@ import { feedsSlice } from './feedSlice';
 import { constructorSlice } from './constructorSlice';
 import { orderSlice } from './orderSlice';
 
-// const rootReducer = () => {}; // Заменить на импорт настоящего редьюсера
-//}); // Заменить на импорт настоящего редьюсера
-
 const rootReducer = combineReducers({
   [ingredientsSlice.reducerPath]: ingredientsSlice.reducer,
   [feedsSlice.reducerPath]: feedsSlice.reducer,

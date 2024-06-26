@@ -1,24 +1,38 @@
-import { FC, useMemo } from 'react';
+import { FC, useEffect, useMemo } from 'react';
 import { Preloader } from '../ui/preloader';
 import { OrderInfoUI } from '../ui/order-info';
 import { TIngredient } from '@utils-types';
-import { useSelector } from '../../services/store';
+import { useDispatch, useSelector } from '../../services/store';
 import { getIngredients } from '../../services/ingredientsSlice';
 import { useLocation, useParams } from 'react-router-dom';
+import { getOrderByNumberFromServer } from '../../services/orderSlice';
 
 export const OrderInfo: FC = () => {
+  const dispatch = useDispatch();
   const { number } = useParams();
   const location = useLocation();
 
+  let state = location.state as { background?: Location };
+  useEffect(() => {
+    if (!location.state) {
+      dispatch(getOrderByNumberFromServer(Number(number)));
+    }
+  }, []);
+
   const orderData = useSelector((state) => {
-    if (location.pathname.includes('profile'))
-      return state.order.orders.orders.find(
-        (order) => order.number === Number(number)
-      );
-    else
-      return state.feedData.feeds.find(
-        (order) => order.number === Number(number)
-      );
+    if (!location.state) {
+      return state.order.orderModalData;
+    } else {
+      if (location.pathname.includes('profile')) {
+        return state.order.orders.orders.find(
+          (order) => order.number === Number(number)
+        );
+      } else {
+        return state.feedData.feeds.find(
+          (order) => order.number === Number(number)
+        );
+      }
+    }
   });
 
   const ingredients: TIngredient[] = useSelector(getIngredients);

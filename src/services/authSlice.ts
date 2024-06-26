@@ -10,7 +10,6 @@ import {
   updateUserApi
 } from '@api';
 import { deleteCookie, getCookie, setCookie } from '../utils/cookie';
-import { getOrdersFromServer } from './orderSlice';
 
 type TUserInitialState = {
   user: TUser | null;
@@ -37,7 +36,6 @@ export const checkUserAuth = createAsyncThunk(
           dispatch(setUser(res.user));
           dispatch(setIsAuthChecked(true));
         })
-        .then(() => dispatch(getOrdersFromServer()))
         .catch(() => {
           deleteCookie('accessToken');
           localStorage.removeItem('refreshToken');

@@ -46,6 +46,10 @@ export const feedsSlice = createSlice({
           totalToday: action.payload.totalToday
         };
         state.isFeedsLoading = false;
+      })
+      .addCase(getFeedsFromServer.rejected, (state, action) => {
+        state.isFeedsLoading = false;
+        alert(action.error.message);
       });
   }
 });

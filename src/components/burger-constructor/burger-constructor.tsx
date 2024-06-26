@@ -10,11 +10,9 @@ import { TConstructorIngredient, TIngredient } from '@utils-types';
 import {
   getOrderModalData,
   getOrderRequest,
-  getOrdersFromServer,
   orderBurger,
   setOrderModalData
 } from '../../services/orderSlice';
-import { getFeedsFromServer } from '../../services/feedSlice';
 import { getIsAuthChecked } from '../../services/authSlice';
 import { useNavigate } from 'react-router-dom';
 
@@ -46,8 +44,6 @@ export const BurgerConstructor: FC = () => {
     if (isAuth) {
       if (constructorItems.bun._id !== '') {
         dispatch(orderBurger(createOrderData(constructorItems))).then(() => {
-          dispatch(getFeedsFromServer());
-          dispatch(getOrdersFromServer());
           dispatch(
             setConstructor({
               bun: emptyIngredient,
