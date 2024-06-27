@@ -5,8 +5,6 @@ import {
   loginUserApi,
   logoutApi,
   registerUserApi,
-  TLoginData,
-  TRegisterData,
   updateUserApi
 } from '@api';
 import { deleteCookie, getCookie, setCookie } from '../utils/cookie';
@@ -48,21 +46,13 @@ export const checkUserAuth = createAsyncThunk(
 
 export const registerUser = createAsyncThunk(
   'auth/registerUser',
-  async (regData: TRegisterData) => registerUserApi(regData)
+  registerUserApi
 );
-export const loginUser = createAsyncThunk(
-  'auth/loginUser',
-  async (regData: TLoginData) => loginUserApi(regData)
-);
+export const loginUser = createAsyncThunk('auth/loginUser', loginUserApi);
 
-export const updateUser = createAsyncThunk(
-  'auth/updataUser',
-  async (userData: Partial<TRegisterData>) => updateUserApi(userData)
-);
+export const updateUser = createAsyncThunk('auth/updateUser', updateUserApi);
 
-export const logoutUser = createAsyncThunk('auth/logoutUser', async () =>
-  logoutApi()
-);
+export const logoutUser = createAsyncThunk('auth/logoutUser', logoutApi);
 
 export const authSlice = createSlice({
   name: 'auth',

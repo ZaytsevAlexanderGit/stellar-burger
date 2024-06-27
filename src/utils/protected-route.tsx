@@ -16,16 +16,6 @@ const Protected = ({
   const user = useSelector(getUser);
   const location = useLocation();
 
-  // location: pathname /profile, user == null, onlyUnAuth = false
-  // location: /login, from: /profile, user == null, onlyUnAuth = true
-  // location: /login, from: /profile, user != null, onlyUnAuth = true
-  // location: /profile, user != null, onlyUnAuth = false
-  // location: /profile, user == null, onlyUnAuth = false
-
-  // if (!isAuthChecked) {
-  //   return <p>Загрузка...</p>;
-  // }
-
   if (onlyUnAuth && user) {
     const { from } = location.state ?? { from: { pathname: '/' } };
     return <Navigate to={from} />;
@@ -34,9 +24,6 @@ const Protected = ({
   if (!onlyUnAuth && !user) {
     return <Navigate to='/login' state={{ from: location }} />;
   }
-
-  // onlyUnAuth && !user
-  // !onlyUnAuth && user
 
   return component;
 };

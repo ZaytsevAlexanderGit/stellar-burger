@@ -2,11 +2,16 @@ import { FC, SyntheticEvent, useState } from 'react';
 import { RegisterUI } from '@ui-pages';
 import { useDispatch } from '../../services/store';
 import { registerUser } from '../../services/authSlice';
-import { useNavigate } from 'react-router-dom';
 
 export const Register: FC = () => {
-  const navigate = useNavigate();
   const dispatch = useDispatch();
+  // const { values, handleChange, setValues } = useForm({
+  //   userName:"",
+  //   email: '',
+  //   password: ''
+  // });
+  //
+  // const { userName, email, password } = values;
   const [userName, setUserName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
