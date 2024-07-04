@@ -15,7 +15,7 @@ import styles from './app.module.css';
 import { AppHeader, IngredientDetails, Modal, OrderInfo } from '@components';
 import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch } from '../../services/store';
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { getIngredientsFromServer } from '../../services/ingredientsSlice';
 import { OnlyAuth, OnlyUnAuth } from '../../utils/protected-route';
 import { checkUserAuth } from '../../services/authSlice';
@@ -26,12 +26,14 @@ const App = () => {
   let navigate = useNavigate();
   let location = useLocation();
 
+  const onClose = () => navigate(-1);
+
   useEffect(() => {
     dispatch(getIngredientsFromServer());
     dispatch(checkUserAuth());
-  }, []);
+  }, [dispatch]);
 
-  let state = location.state as { background?: Location };
+  let state = location.state as { background?: Location; fromOrder?: Location };
 
   return (
     <div className={styles.app}>
@@ -105,16 +107,11 @@ const App = () => {
         />
       </Routes>
       {state?.background && (
-        <Routes>
+        <Routes location={state?.fromOrder || location}>
           <Route
             path='/feed/:number'
             element={
-              <Modal
-                title='Детали Заказа'
-                onClose={() => {
-                  navigate(-1);
-                }}
-              >
+              <Modal title='Детали Заказа' onClose={onClose}>
                 <OrderInfo />
               </Modal>
             }
@@ -122,12 +119,7 @@ const App = () => {
           <Route
             path='/ingredients/:id'
             element={
-              <Modal
-                title='Детали ингредиента'
-                onClose={() => {
-                  navigate(-1);
-                }}
-              >
+              <Modal title='Детали ингредиента' onClose={onClose}>
                 <IngredientDetails />
               </Modal>
             }
@@ -137,12 +129,7 @@ const App = () => {
             element={
               <OnlyAuth
                 component={
-                  <Modal
-                    title='Детали Заказа'
-                    onClose={() => {
-                      navigate(-1);
-                    }}
-                  >
+                  <Modal title='Детали Заказа' onClose={onClose}>
                     <OrderInfo />
                   </Modal>
                 }

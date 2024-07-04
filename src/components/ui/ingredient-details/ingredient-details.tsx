@@ -7,6 +7,11 @@ export const IngredientDetailsUI: FC<IngredientDetailsUIProps> = memo(
     const { name, image_large, calories, proteins, fat, carbohydrates } =
       ingredientData;
 
+    // const location = useLocation();
+    // const p = useParams();
+    // console.log(location.state);
+    // console.log(p);
+
     return (
       <div className={styles.content}>
         <img

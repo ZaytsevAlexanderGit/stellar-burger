@@ -2,7 +2,7 @@ import React, { FC, SyntheticEvent } from 'react';
 import { useDispatch } from '../../services/store';
 import { loginUser } from '../../services/authSlice';
 import { LoginUI } from '@ui-pages';
-import { useForm } from '../../hooks/useForm';
+import { useForm } from '../../utils/hooks/useForm';
 
 export const Login: FC = () => {
   const dispatch = useDispatch();
@@ -23,7 +23,6 @@ export const Login: FC = () => {
       errorText=''
       email={email}
       onChange={handleChange}
-      setEmail={setValues}
       password={password}
       setPassword={setValues}
       handleSubmit={handleSubmit}

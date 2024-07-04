@@ -13,7 +13,7 @@ import {
   orderBurger,
   setOrderModalData
 } from '../../services/orderSlice';
-import { getIsAuthChecked } from '../../services/authSlice';
+import { checkUserAuth, getIsAuthChecked } from '../../services/authSlice';
 import { useNavigate } from 'react-router-dom';
 
 const createOrderData = (burgerIngredients: {
@@ -55,7 +55,10 @@ export const BurgerConstructor: FC = () => {
         alert('Burger require buns');
       }
     } else {
-      navigate('/login');
+      dispatch(checkUserAuth());
+      if (!isAuth) {
+        navigate('/login');
+      }
     }
   };
   const closeOrderModal = () => {
