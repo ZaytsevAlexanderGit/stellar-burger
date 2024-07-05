@@ -1,5 +1,9 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { getOrderByNumberApi, getOrdersApi, orderBurgerApi } from '@api';
+import {
+  getOrderByNumberApi,
+  getOrdersApi,
+  orderBurgerApi
+} from '../utils/burger-api';
 import { TOrder } from '@utils-types';
 
 type TOrderInitialState = {
@@ -8,14 +12,16 @@ type TOrderInitialState = {
   orderModalData: TOrder | null;
   orders: { orders: TOrder[]; total: number; totalToday: number };
   isOrdersReceiving: boolean;
+  error: string;
 };
 
-const initialState: TOrderInitialState = {
+export const initialState: TOrderInitialState = {
   orders: { orders: [], total: 0, totalToday: 0 },
   ingredients: [],
   orderRequest: false,
   orderModalData: null,
-  isOrdersReceiving: false
+  isOrdersReceiving: false,
+  error: ''
 };
 
 export const orderBurger = createAsyncThunk(
@@ -53,36 +59,47 @@ export const orderSlice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(orderBurger.pending, (state) => {
       state.orderRequest = true;
+      state.error = '';
     });
     builder.addCase(orderBurger.rejected, (state, action) => {
       state.orderRequest = false;
-      alert(action.payload);
+      state.error = action.error.message!;
+      console.error(action.error.message);
     });
     builder.addCase(orderBurger.fulfilled, (state, action) => {
       state.orderRequest = false;
       state.ingredients = [];
+      state.error = '';
       state.orderModalData = action.payload.order;
     });
     builder.addCase(getOrdersFromServer.pending, (state) => {
       state.isOrdersReceiving = true;
+      state.error = '';
     });
     builder.addCase(getOrdersFromServer.rejected, (state, action) => {
       state.isOrdersReceiving = false;
-      alert(action.payload);
+      state.error = action.error.message!;
+      console.error(action.error.message);
     });
     builder.addCase(getOrdersFromServer.fulfilled, (state, action) => {
       state.isOrdersReceiving = false;
-      state.orders.orders = action.payload;
+      state.error = '';
+      state.orders.orders = action.payload.orders;
+      state.orders.total = action.payload.total;
+      state.orders.totalToday = action.payload.totalToday;
     });
     builder.addCase(getOrderByNumberFromServer.pending, (state) => {
       state.isOrdersReceiving = true;
+      state.error = '';
     });
     builder.addCase(getOrderByNumberFromServer.rejected, (state, action) => {
       state.isOrdersReceiving = false;
-      alert(action.payload);
+      state.error = action.error.message!;
+      console.error(action.error.message);
     });
     builder.addCase(getOrderByNumberFromServer.fulfilled, (state, action) => {
       state.isOrdersReceiving = false;
+      state.error = '';
       state.orderModalData = action.payload.orders[0];
     });
   }

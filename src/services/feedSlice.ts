@@ -1,17 +1,19 @@
 import { TOrder } from '@utils-types';
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { getFeedsApi } from '@api';
+import { getFeedsApi } from '../utils/burger-api';
 
 type TFeedInitialState = {
   isFeedsLoading: boolean;
   feeds: TOrder[];
   totalInfo: { total: number; totalToday: number };
+  error: string;
 };
 
-const initialState: TFeedInitialState = {
+export const initialState: TFeedInitialState = {
   isFeedsLoading: false,
   feeds: [],
-  totalInfo: { total: 0, totalToday: 0 }
+  totalInfo: { total: 0, totalToday: 0 },
+  error: ''
 };
 
 export const getFeedsFromServer = createAsyncThunk('data/getFeeds', async () =>
@@ -38,6 +40,7 @@ export const feedsSlice = createSlice({
     builder
       .addCase(getFeedsFromServer.pending, (state) => {
         state.isFeedsLoading = true;
+        state.error = '';
       })
       .addCase(getFeedsFromServer.fulfilled, (state, action) => {
         state.feeds = action.payload.orders;
@@ -46,10 +49,12 @@ export const feedsSlice = createSlice({
           totalToday: action.payload.totalToday
         };
         state.isFeedsLoading = false;
+        state.error = '';
       })
       .addCase(getFeedsFromServer.rejected, (state, action) => {
         state.isFeedsLoading = false;
-        alert(action.error.message);
+        state.error = action.error.message!;
+        console.error(action.error.message);
       });
   }
 });

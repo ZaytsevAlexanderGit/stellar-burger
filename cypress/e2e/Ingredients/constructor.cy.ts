@@ -1,19 +1,19 @@
-const baseURL = 'https://norma.nomoreparties.space/api';
+const BASE_URL = 'https://norma.nomoreparties.space/api';
 
 beforeEach(() => {
-  cy.intercept('GET', `${baseURL}/ingredients`, {
+  cy.intercept('GET', `${BASE_URL}/ingredients`, {
     fixture: 'ingredients.json'
   }).as('getIngredients');
 
-  cy.intercept('GET', `${baseURL}/auth/user`, {
+  cy.intercept('GET', `${BASE_URL}/auth/user`, {
     fixture: 'user.json'
   }).as('getUser');
 
-  cy.intercept('POST', `${baseURL}/auth/user`, {
+  cy.intercept('POST', `${BASE_URL}/auth/user`, {
     fixture: 'ingredients.json'
   }).as('postLogin');
 
-  cy.intercept('POST', `${baseURL}/orders`, {
+  cy.intercept('POST', `${BASE_URL}/orders`, {
     fixture: 'orderResponse.json'
   }).as('postOrder');
 
