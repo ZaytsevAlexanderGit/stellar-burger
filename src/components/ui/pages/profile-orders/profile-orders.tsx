@@ -10,7 +10,6 @@ import { getIsOrderReceiving } from '../../../../services/orderSlice';
 
 export const ProfileOrdersUI: FC<ProfileOrdersUIProps> = ({ orders }) => {
   const isLoading = useSelector(getIsOrderReceiving);
-  console.log();
 
   if (isLoading)
     return (

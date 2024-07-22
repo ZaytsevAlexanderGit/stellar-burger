@@ -11,7 +11,7 @@ import { feedsSlice } from './feedSlice';
 import { constructorSlice } from './constructorSlice';
 import { orderSlice } from './orderSlice';
 
-const rootReducer = combineReducers({
+export const rootReducer = combineReducers({
   [ingredientsSlice.reducerPath]: ingredientsSlice.reducer,
   [feedsSlice.reducerPath]: feedsSlice.reducer,
   [authSlice.reducerPath]: authSlice.reducer,
